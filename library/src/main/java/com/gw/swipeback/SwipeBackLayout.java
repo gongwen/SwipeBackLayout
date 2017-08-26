@@ -41,9 +41,10 @@ public class SwipeBackLayout extends ViewGroup {
     private View innerScrollView;
 
     private int width, height;
-    private float SWIPE_BACK_FACTOR = 0.5f;
+
+    private float swipeBackFactor = 0.5f;
     private float swipeBackFraction;
-    private int alpha = 125;
+    private int maskAlpha = 125;
     private float downX, downY;
 
     public SwipeBackLayout(@NonNull Context context) {
@@ -72,7 +73,13 @@ public class SwipeBackLayout extends ViewGroup {
         if (childCount > 0) {
             measureChildren(widthMeasureSpec, heightMeasureSpec);
             mDragContentView = getChildAt(0);
-            setMeasuredDimension(mDragContentView.getMeasuredWidth(), mDragContentView.getMeasuredHeight());
+            setMeasuredDimension(mDragContentView.getMeasuredWidth() + getPaddingLeft() + getPaddingRight()
+                    , mDragContentView.getMeasuredHeight() + getPaddingTop() + getPaddingBottom());
+        } else {
+            int width = View.resolveSize(0, widthMeasureSpec);
+            int height = View.resolveSize(0, heightMeasureSpec);
+            setMeasuredDimension(width + getPaddingLeft() + getPaddingRight()
+                    , height + getPaddingTop() + getPaddingBottom());
         }
     }
 
@@ -96,9 +103,8 @@ public class SwipeBackLayout extends ViewGroup {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        canvas.drawARGB(alpha - (int) (alpha * swipeBackFraction), 0, 0, 0);
+        canvas.drawARGB(maskAlpha - (int) (maskAlpha * swipeBackFraction), 0, 0, 0);
     }
-
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
@@ -112,7 +118,6 @@ public class SwipeBackLayout extends ViewGroup {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-
         mDragHelper.processTouchEvent(event);
         return true;
     }
@@ -125,13 +130,13 @@ public class SwipeBackLayout extends ViewGroup {
     }
 
     public void smoothScrollToX(int finalLeft) {
-        if (mDragHelper.settleCapturedViewAt(finalLeft, 0)) {
+        if (mDragHelper.settleCapturedViewAt(finalLeft, getPaddingTop())) {
             ViewCompat.postInvalidateOnAnimation(this);
         }
     }
 
     public void smoothScrollToY(int finalTop) {
-        if (mDragHelper.settleCapturedViewAt(0, finalTop)) {
+        if (mDragHelper.settleCapturedViewAt(getPaddingLeft(), finalTop)) {
             ViewCompat.postInvalidateOnAnimation(this);
         }
     }
@@ -146,21 +151,21 @@ public class SwipeBackLayout extends ViewGroup {
         @Override
         public int clampViewPositionHorizontal(View child, int left, int dx) {
             if (mDirectionMode == FROM_LEFT && !Util.canViewScrollRight(innerScrollView, downX, downY, false)) {
-                return Math.min(Math.max(left, 0), width);
+                return Math.min(Math.max(left, getPaddingLeft()), width);
             } else if (mDirectionMode == FROM_RIGHT && !Util.canViewScrollLeft(innerScrollView, downX, downY, false)) {
-                return Math.min(Math.max(left, -width), 0);
+                return Math.min(Math.max(left, -width), getPaddingRight());
             }
-            return super.clampViewPositionHorizontal(child, left, dx);
+            return getPaddingLeft();
         }
 
         @Override
         public int clampViewPositionVertical(View child, int top, int dy) {
             if (mDirectionMode == FROM_TOP && !Util.canViewScrollUp(innerScrollView, downX, downY, false)) {
-                return Math.min(Math.max(top, 0), height);
+                return Math.min(Math.max(top, getPaddingTop()), height);
             } else if (mDirectionMode == FROM_BOTTOM && !Util.canViewScrollDown(innerScrollView, downX, downY, false)) {
-                return Math.min(Math.max(top, -height), 0);
+                return Math.min(Math.max(top, -height), getPaddingBottom());
             }
-            return super.clampViewPositionVertical(child, top, dy);
+            return getPaddingTop();
         }
 
         @Override
@@ -179,14 +184,14 @@ public class SwipeBackLayout extends ViewGroup {
                     break;
             }
             if (mSwipeBackListener != null) {
-                mSwipeBackListener.onViewPositionChanged(mDragContentView, swipeBackFraction, SWIPE_BACK_FACTOR);
+                mSwipeBackListener.onViewPositionChanged(mDragContentView, swipeBackFraction, swipeBackFactor);
             }
         }
 
         @Override
         public void onViewReleased(View releasedChild, float xvel, float yvel) {
             super.onViewReleased(releasedChild, xvel, yvel);
-            if (swipeBackFraction >= SWIPE_BACK_FACTOR) {
+            if (swipeBackFraction >= swipeBackFactor) {
                 switch (mDirectionMode) {
                     case FROM_LEFT:
                         smoothScrollToX(width);
@@ -205,11 +210,11 @@ public class SwipeBackLayout extends ViewGroup {
                 switch (mDirectionMode) {
                     case FROM_LEFT:
                     case FROM_RIGHT:
-                        smoothScrollToX(0);
+                        smoothScrollToX(getPaddingLeft());
                         break;
                     case FROM_BOTTOM:
                     case FROM_TOP:
-                        smoothScrollToY(0);
+                        smoothScrollToY(getPaddingTop());
                         break;
                 }
             }
@@ -245,16 +250,16 @@ public class SwipeBackLayout extends ViewGroup {
     }
 
     public void setSwipeBackFactor(float swipeBackFactor) {
-        this.SWIPE_BACK_FACTOR = swipeBackFactor;
+        this.swipeBackFactor = swipeBackFactor;
     }
 
-    public void setAlpha(int alpha) {
-        if (alpha > 255) {
-            alpha = 255;
-        } else if (alpha < 0) {
-            alpha = 0;
+    public void setMaskAlpha(int maskAlpha) {
+        if (maskAlpha > 255) {
+            maskAlpha = 255;
+        } else if (maskAlpha < 0) {
+            maskAlpha = 0;
         }
-        this.alpha = alpha;
+        this.maskAlpha = maskAlpha;
     }
 
     public void setDirectionMode(@DirectionMode int direction) {
@@ -270,10 +275,9 @@ public class SwipeBackLayout extends ViewGroup {
         }
 
         @Override
-        public void onViewSwipeFinished(View mView, boolean isBackToEnd) {
-            if (isBackToEnd) {
+        public void onViewSwipeFinished(View mView, boolean isEnd) {
+            if (isEnd) {
                 finish();
-            } else {
             }
         }
     };
@@ -286,7 +290,6 @@ public class SwipeBackLayout extends ViewGroup {
 
         void onViewPositionChanged(View mView, float swipeBackFraction, float SWIPE_BACK_FACTOR);
 
-        void onViewSwipeFinished(View mView, boolean isBackToEnd);
+        void onViewSwipeFinished(View mView, boolean isEnd);
     }
-
 }
