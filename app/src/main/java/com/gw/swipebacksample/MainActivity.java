@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.Button;
 
 import com.gw.swipebacksample.activity.CommonActivity;
+import com.gw.swipebacksample.activity.CommonAttachToActivity;
 import com.gw.swipebacksample.activity.HorizontalScrollViewActivity;
 import com.gw.swipebacksample.activity.ListViewActivity;
 import com.gw.swipebacksample.activity.NestedScrollViewActivity;
@@ -17,6 +18,7 @@ import com.gw.swipebacksample.base.BaseToolBarActivity;
 
 public class MainActivity extends BaseToolBarActivity implements View.OnClickListener {
     private Button btnCommon;
+    private Button btnAttachToCommon;
     private Button btnScrollView;
     private Button btnHorizontalScrollView;
     private Button btnNestedScrollView;
@@ -35,6 +37,9 @@ public class MainActivity extends BaseToolBarActivity implements View.OnClickLis
         super.onCreate(savedInstanceState);
         btnCommon = (Button) findViewById(R.id.btnCommon);
         btnCommon.setOnClickListener(this);
+
+        btnAttachToCommon = (Button) findViewById(R.id.btnAttachToCommon);
+        btnAttachToCommon.setOnClickListener(this);
 
         btnScrollView = (Button) findViewById(R.id.btnScrollView);
         btnScrollView.setOnClickListener(this);
@@ -64,6 +69,9 @@ public class MainActivity extends BaseToolBarActivity implements View.OnClickLis
         switch (view.getId()) {
             case R.id.btnCommon:
                 startActivity(CommonActivity.class);
+                break;
+            case R.id.btnAttachToCommon:
+                startActivity(CommonAttachToActivity.class);
                 break;
             case R.id.btnScrollView:
                 startActivity(ScrollViewActivity.class);

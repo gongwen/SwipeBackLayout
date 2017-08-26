@@ -1,4 +1,4 @@
-package com.gw.swipebacksample.base;
+package com.gw.swipebacksample.activity;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -7,22 +7,27 @@ import android.widget.RadioButton;
 
 import com.gw.swipeback.SwipeBackLayout;
 import com.gw.swipebacksample.R;
+import com.gw.swipebacksample.base.BaseToolBarActivity;
 
 /**
- * Created by GongWen on 17/8/25.
+ * Created by GongWen on 17/8/24.
  */
 
-public abstract class BaseSwipeBackActivity extends BaseToolBarActivity implements CompoundButton.OnCheckedChangeListener {
-    protected SwipeBackLayout mSwipeBackLayout;
-    protected RadioButton fromLeftRb;
-    protected RadioButton fromTopRb;
-    protected RadioButton fromRightRb;
-    protected RadioButton fromBottomRb;
+public class CommonAttachToActivity extends BaseToolBarActivity implements CompoundButton.OnCheckedChangeListener {
+    private SwipeBackLayout mSwipeBackLayout;
+    private RadioButton fromLeftRb;
+    private RadioButton fromTopRb;
+    private RadioButton fromRightRb;
+    private RadioButton fromBottomRb;
+
+    @Override
+    protected int getLayoutId() {
+        return R.layout.activity_attach_to_common;
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mSwipeBackLayout = (SwipeBackLayout) findViewById(R.id.swipeBackLayout);
         fromLeftRb = (RadioButton) findViewById(R.id.fromLeftRb);
         fromLeftRb.setOnCheckedChangeListener(this);
         fromTopRb = (RadioButton) findViewById(R.id.fromTopRb);
@@ -31,6 +36,9 @@ public abstract class BaseSwipeBackActivity extends BaseToolBarActivity implemen
         fromRightRb.setOnCheckedChangeListener(this);
         fromBottomRb = (RadioButton) findViewById(R.id.fromBottomRb);
         fromBottomRb.setOnCheckedChangeListener(this);
+
+        mSwipeBackLayout = new SwipeBackLayout(this);
+        mSwipeBackLayout.attachToActivity(this);
     }
 
     @Override
@@ -53,4 +61,3 @@ public abstract class BaseSwipeBackActivity extends BaseToolBarActivity implemen
         }
     }
 }
-

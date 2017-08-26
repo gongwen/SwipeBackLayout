@@ -24,6 +24,9 @@
             android:name=".activity.CommonActivity"
             android:theme="@style/Theme.Swipe.Back.NoActionBar" />
         <activity
+            android:name=".activity.CommonAttachToActivity"
+            android:theme="@style/Theme.Swipe.Back.NoActionBar" />
+        <activity
             android:name=".activity.ScrollViewActivity"
             android:theme="@style/Theme.Swipe.Back.NoActionBar" />
         <activity

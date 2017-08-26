@@ -2,7 +2,9 @@ package com.gw.swipeback;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -34,7 +36,7 @@ public class SwipeBackLayout extends ViewGroup {
     public @interface DirectionMode {
     }
 
-    public int mDirectionMode = FROM_LEFT;
+    private int mDirectionMode = FROM_LEFT;
 
     private final ViewDragHelper mDragHelper;
     private View mDragContentView;
@@ -60,6 +62,25 @@ public class SwipeBackLayout extends ViewGroup {
         setWillNotDraw(false);
         mDragHelper = ViewDragHelper.create(this, 1f, new DragHelperCallback());
         setSwipeBackListener(defaultSwipeBackListener);
+
+        init(context, attrs);
+    }
+
+    private void init(@NonNull Context context, @Nullable AttributeSet attrs) {
+        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.SwipeBackLayout);
+        setDirectionMode(a.getInt(R.styleable.SwipeBackLayout_directionMode, mDirectionMode));
+        setSwipeBackFactor(a.getFloat(R.styleable.SwipeBackLayout_swipeBackFactor, swipeBackFactor));
+        setMaskAlpha(a.getInteger(R.styleable.SwipeBackLayout_maskAlpha, maskAlpha));
+        a.recycle();
+    }
+
+    public void attachToActivity(Activity activity) {
+        ViewGroup decorView = (ViewGroup) activity.getWindow().getDecorView();
+        ViewGroup decorChild = (ViewGroup) decorView.getChildAt(0);
+        decorChild.setBackgroundColor(Color.TRANSPARENT);
+        decorView.removeView(decorChild);
+        addView(decorChild);
+        decorView.addView(this);
     }
 
     @Override
@@ -69,18 +90,20 @@ public class SwipeBackLayout extends ViewGroup {
         if (childCount > 1) {
             throw new IllegalStateException("SwipeBackLayout must contains only one direct child.");
         }
-
+        int defaultMeasuredWidth = 0;
+        int defaultMeasuredHeight = 0;
+        int measuredWidth;
+        int measuredHeight;
         if (childCount > 0) {
             measureChildren(widthMeasureSpec, heightMeasureSpec);
             mDragContentView = getChildAt(0);
-            setMeasuredDimension(mDragContentView.getMeasuredWidth() + getPaddingLeft() + getPaddingRight()
-                    , mDragContentView.getMeasuredHeight() + getPaddingTop() + getPaddingBottom());
-        } else {
-            int width = View.resolveSize(0, widthMeasureSpec);
-            int height = View.resolveSize(0, heightMeasureSpec);
-            setMeasuredDimension(width + getPaddingLeft() + getPaddingRight()
-                    , height + getPaddingTop() + getPaddingBottom());
+            defaultMeasuredWidth = mDragContentView.getMeasuredWidth();
+            defaultMeasuredHeight = mDragContentView.getMeasuredHeight();
         }
+        measuredWidth = View.resolveSize(defaultMeasuredWidth, widthMeasureSpec) + getPaddingLeft() + getPaddingRight();
+        measuredHeight = View.resolveSize(defaultMeasuredHeight, heightMeasureSpec) + getPaddingTop() + getPaddingBottom();
+
+        setMeasuredDimension(measuredWidth, measuredHeight);
     }
 
     @Override
@@ -250,7 +273,16 @@ public class SwipeBackLayout extends ViewGroup {
     }
 
     public void setSwipeBackFactor(float swipeBackFactor) {
+        if (swipeBackFactor > 1) {
+            swipeBackFactor = 1;
+        } else if (swipeBackFactor < 0) {
+            swipeBackFactor = 0;
+        }
         this.swipeBackFactor = swipeBackFactor;
+    }
+
+    public float getSwipeBackFactor() {
+        return swipeBackFactor;
     }
 
     public void setMaskAlpha(int maskAlpha) {
@@ -262,9 +294,18 @@ public class SwipeBackLayout extends ViewGroup {
         this.maskAlpha = maskAlpha;
     }
 
+    public int getMaskAlpha() {
+        return maskAlpha;
+    }
+
     public void setDirectionMode(@DirectionMode int direction) {
         mDirectionMode = direction;
     }
+
+    public int getDirectionMode() {
+        return mDirectionMode;
+    }
+
 
     private OnSwipeBackListener mSwipeBackListener;
 
