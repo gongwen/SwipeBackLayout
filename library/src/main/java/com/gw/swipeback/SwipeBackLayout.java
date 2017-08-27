@@ -44,6 +44,7 @@ public class SwipeBackLayout extends ViewGroup {
 
     private int width, height;
 
+    private int mTouchSlop;
     private float swipeBackFactor = 0.5f;
     private float swipeBackFraction;
     private int maskAlpha = 125;
@@ -61,6 +62,7 @@ public class SwipeBackLayout extends ViewGroup {
         super(context, attrs, defStyleAttr);
         setWillNotDraw(false);
         mDragHelper = ViewDragHelper.create(this, 1f, new DragHelperCallback());
+        mTouchSlop = mDragHelper.getTouchSlop();
         setSwipeBackListener(defaultSwipeBackListener);
 
         init(context, attrs);
@@ -131,9 +133,26 @@ public class SwipeBackLayout extends ViewGroup {
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
-        if (MotionEventCompat.getActionMasked(ev) == MotionEvent.ACTION_DOWN) {
-            downX = ev.getRawX();
-            downY = ev.getRawY();
+        switch (MotionEventCompat.getActionMasked(ev)) {
+            case MotionEvent.ACTION_DOWN:
+                downX = ev.getRawX();
+                downY = ev.getRawY();
+                break;
+            case MotionEvent.ACTION_MOVE:
+                if (innerScrollView != null && Util.contains(innerScrollView, downX, downY)) {
+                    float distanceX = Math.abs(ev.getRawX() - downX);
+                    float distanceY = Math.abs(ev.getRawY() - downY);
+                    if (mDirectionMode == FROM_LEFT || mDirectionMode == FROM_RIGHT) {
+                        if (distanceY > mTouchSlop && distanceY > distanceX) {
+                            return super.onInterceptTouchEvent(ev);
+                        }
+                    } else if (mDirectionMode == FROM_TOP || mDirectionMode == FROM_BOTTOM) {
+                        if (distanceX > mTouchSlop && distanceX > distanceY) {
+                            return super.onInterceptTouchEvent(ev);
+                        }
+                    }
+                }
+                break;
         }
         boolean handled = mDragHelper.shouldInterceptTouchEvent(ev);
         return handled ? handled : super.onInterceptTouchEvent(ev);

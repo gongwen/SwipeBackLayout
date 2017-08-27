@@ -18,28 +18,28 @@ import android.widget.ScrollView;
 
 public class Util {
     public static boolean canViewScrollUp(View mView, float x, float y, boolean defaultValueForNull) {
-        if (mView == null || !contains(mView, (int) x, (int) y)) {
+        if (mView == null || !contains(mView, x, y)) {
             return defaultValueForNull;
         }
         return ViewCompat.canScrollVertically(mView, -1);
     }
 
     public static boolean canViewScrollDown(View mView, float x, float y, boolean defaultValueForNull) {
-        if (mView == null || !contains(mView, (int) x, (int) y)) {
+        if (mView == null || !contains(mView, x, y)) {
             return defaultValueForNull;
         }
         return ViewCompat.canScrollVertically(mView, 1);
     }
 
     public static boolean canViewScrollRight(View mView, float x, float y, boolean defaultValueForNull) {
-        if (mView == null || !contains(mView, (int) x, (int) y)) {
+        if (mView == null || !contains(mView, x, y)) {
             return defaultValueForNull;
         }
         return ViewCompat.canScrollHorizontally(mView, -1);
     }
 
     public static boolean canViewScrollLeft(View mView, float x, float y, boolean defaultValueForNull) {
-        if (mView == null || !contains(mView, (int) x, (int) y)) {
+        if (mView == null || !contains(mView, x, y)) {
             return defaultValueForNull;
         }
         return ViewCompat.canScrollHorizontally(mView, 1);
@@ -75,9 +75,9 @@ public class Util {
                 || mView instanceof WebView;
     }
 
-    public static boolean contains(View mView, int x, int y) {
+    public static boolean contains(View mView, float x, float y) {
         Rect localRect = new Rect();
         mView.getGlobalVisibleRect(localRect);
-        return localRect.contains(x, y);
+        return localRect.contains((int) x, (int) y);
     }
 }
