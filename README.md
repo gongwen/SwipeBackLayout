@@ -1,1 +1,123 @@
 # SwipeBackLayout
+===========
+SwipeBackLayout is an android library that can finish an activity by using gesture.
+
+You can set the swipe direction,such as FROM_LEFT,FROM_TOP,FROM_RIGHT and FROM_BOTTOM.
+## Screenshots
+![image](screenshot/screenshot1.gif)	
+
+![image](screenshot/screenshot2.gif)
+
+Sample Apk Download
+---
+[sample apk download](https://github.com/gongwen/SwipeBackLayout/raw/master/sample-apks/app-debug-1.0.0.apk)
+
+Usage
+---
+##### Gradle
+```
+dependencies {
+    compile 'com.gongwen:swipeback:1.0.0'
+}
+```
+###### [Layout](app/src/main/java/activity/CommonActivity.java)
+```
+<com.gw.swipeback.SwipeBackLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/swipeBackLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:directionMode="left"
+    app:maskAlpha="125"
+    app:swipeBackFactor="0.5">
+
+	<!-- SwipeBackLayout must contains only one direct child -->
+
+</com.gw.swipeback.SwipeBackLayout>
+```
+###### Attributes
+| Attribute 属性          | Description 描述 |
+|:---				     |:---|
+| swipeBackFactor        |    set the factor of swipeback       |
+| maskAlpha        | set the background alpha at the beginning of swipeback            |
+| directionMode         |  set the direction of swiping to finish          |
+
+###### [Code](app/src/main/java/activity/CommonAttachToActivity.java)
+```
+public void onCreate(@Nullable Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    //SwipeBackLayout is included in the layout
+    setContentView(layoutId);
+    SwipeBackLayout mSwipeBackLayout = (SwipeBackLayout) findViewById(R.id.swipeBackLayout);
+    mSwipeBackLayout.setDirectionMode(SwipeBackLayout.FROM_LEFT);
+    mSwipeBackLayout.setMaskAlpha(125);
+    mSwipeBackLayout.setSwipeBackFactor(0.5f);
+    mSwipeBackLayout.setSwipeBackListener(new SwipeBackLayout.OnSwipeBackListener() {
+        @Override
+        public void onViewPositionChanged(View mView, float swipeBackFraction, float SWIPE_BACK_FACTOR) {
+            
+        }
+    
+        @Override
+        public void onViewSwipeFinished(View mView, boolean isEnd) {
+    
+        }
+    });
+}
+```
+or
+```
+public void onCreate(@Nullable Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    SwipeBackLayout mSwipeBackLayout = new SwipeBackLayout(this);
+    mSwipeBackLayout.addView(contentView);
+    setContentView(mSwipeBackLayout);
+}
+```
+or
+```
+public void onCreate(@Nullable Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    //SwipeBackLayout is not included in the layout
+    setContentView(layoutId);
+    mSwipeBackLayout = new SwipeBackLayout(this);
+    mSwipeBackLayout.attachToActivity(this);
+}
+```
+##### [theme](app/src/main/res/values/styles.xml)
+```
+<style name="Theme.Swipe.Back.NoActionBar" parent="AppTheme">
+    <item name="android:windowIsTranslucent">true</item>
+    <item name="android:windowBackground">@android:color/transparent</item>
+</style>
+```
+
+Support Views
+---
+SwipeBackLayout must contains only one direct child.
+
+Such as:
+* LinearLayout,RelativeLayout,FrameLayout,TableLayout etc.
+* ScrollView,HorizontalScrollView,NestedScrollView etc.
+* RecyclerView,the subClass of AbsListView(ListView etc.)
+* ViewPager,WebView etc.
+
+### reference
+##### [ViewDragHelper详解](http://www.jcodecraeer.com/a/anzhuokaifa/androidkaifa/2014/0911/1680.html)
+##### [SwipeBack](https://github.com/liuguangqiang/SwipeBack/)
+
+License
+---
+    Copyright (C) 2017 1798550470@qq.com
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
