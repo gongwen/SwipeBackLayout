@@ -84,7 +84,7 @@ public void onCreate(@Nullable Bundle savedInstanceState) {
     mSwipeBackLayout.attachToActivity(this);
 }
 ```
-##### [theme](app/src/main/res/values/styles.xml)
+##### [Theme](app/src/main/res/values/styles.xml)
 ```
 <style name="Theme.Swipe.Back.NoActionBar" parent="AppTheme">
     <item name="android:windowIsTranslucent">true</item>
