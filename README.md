@@ -1,5 +1,5 @@
-# SwipeBackLayout
-===========
+SwipeBackLayout
+---
 SwipeBackLayout is an android library that can finish an activity by using gesture.
 
 You can set the swipe direction,such as FROM_LEFT,FROM_TOP,FROM_RIGHT and FROM_BOTTOM.
@@ -20,7 +20,7 @@ dependencies {
     compile 'com.gongwen:swipeback:1.0.0'
 }
 ```
-###### [Layout](app/src/main/java/activity/CommonActivity.java)
+###### [Layout](app/src/main/res/layout/activity_common.xml)
 ```
 <com.gw.swipeback.SwipeBackLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -42,7 +42,7 @@ dependencies {
 | maskAlpha        | set the background alpha at the beginning of swipeback            |
 | directionMode         |  set the direction of swiping to finish          |
 
-###### [Code](app/src/main/java/activity/CommonAttachToActivity.java)
+###### [Code](app/src/main/java/com/gw/swipebacksample/activity/CommonAttachToActivity.java)
 ```
 public void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -102,7 +102,8 @@ Such as:
 * RecyclerView,the subClass of AbsListView(ListView etc.)
 * ViewPager,WebView etc.
 
-### reference
+reference
+---
 ##### [ViewDragHelper详解](http://www.jcodecraeer.com/a/anzhuokaifa/androidkaifa/2014/0911/1680.html)
 ##### [SwipeBack](https://github.com/liuguangqiang/SwipeBack/)
 
