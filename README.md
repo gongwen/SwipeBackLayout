@@ -10,14 +10,14 @@ You can set the swipe direction,such as FROM_LEFT,FROM_TOP,FROM_RIGHT and FROM_B
 
 Sample Apk Download
 ---
-[sample apk download](https://github.com/gongwen/SwipeBackLayout/raw/master/sample-apks/app-debug-1.0.0.apk)
+[sample apk download](https://github.com/gongwen/SwipeBackLayout/raw/master/sample-apks/app-debug-1.0.1.apk)
 
 Usage
 ---
 ##### Gradle
 ```
 dependencies {
-    compile 'com.gongwen:swipeback:1.0.0'
+    compile 'com.gongwen:swipeback:1.0.1'
 }
 ```
 ###### [Layout](app/src/main/res/layout/activity_common.xml)

@@ -50,6 +50,9 @@ public class SwipeBackLayout extends ViewGroup {
     private int maskAlpha = 125;
     private float downX, downY;
 
+    private int leftOffset = 0;
+    private int topOffset = 0;
+
     public SwipeBackLayout(@NonNull Context context) {
         this(context, null);
     }
@@ -112,8 +115,8 @@ public class SwipeBackLayout extends ViewGroup {
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         if (getChildCount() == 0) return;
 
-        int left = getPaddingLeft();
-        int top = getPaddingTop();
+        int left = getPaddingLeft() + leftOffset;
+        int top = getPaddingTop() + topOffset;
         int right = left + mDragContentView.getMeasuredWidth();
         int bottom = top + mDragContentView.getMeasuredHeight();
         mDragContentView.layout(left, top, right, bottom);
@@ -192,22 +195,24 @@ public class SwipeBackLayout extends ViewGroup {
 
         @Override
         public int clampViewPositionHorizontal(View child, int left, int dx) {
+            leftOffset = getPaddingLeft();
             if (mDirectionMode == FROM_LEFT && !Util.canViewScrollRight(innerScrollView, downX, downY, false)) {
-                return Math.min(Math.max(left, getPaddingLeft()), width);
+                leftOffset = Math.min(Math.max(left, getPaddingLeft()), width);
             } else if (mDirectionMode == FROM_RIGHT && !Util.canViewScrollLeft(innerScrollView, downX, downY, false)) {
-                return Math.min(Math.max(left, -width), getPaddingRight());
+                leftOffset = Math.min(Math.max(left, -width), getPaddingRight());
             }
-            return getPaddingLeft();
+            return leftOffset;
         }
 
         @Override
         public int clampViewPositionVertical(View child, int top, int dy) {
+            topOffset = getPaddingTop();
             if (mDirectionMode == FROM_TOP && !Util.canViewScrollUp(innerScrollView, downX, downY, false)) {
-                return Math.min(Math.max(top, getPaddingTop()), height);
+                topOffset = Math.min(Math.max(top, getPaddingTop()), height);
             } else if (mDirectionMode == FROM_BOTTOM && !Util.canViewScrollDown(innerScrollView, downX, downY, false)) {
-                return Math.min(Math.max(top, -height), getPaddingBottom());
+                topOffset = Math.min(Math.max(top, -height), getPaddingBottom());
             }
-            return getPaddingTop();
+            return topOffset;
         }
 
         @Override
@@ -233,6 +238,7 @@ public class SwipeBackLayout extends ViewGroup {
         @Override
         public void onViewReleased(View releasedChild, float xvel, float yvel) {
             super.onViewReleased(releasedChild, xvel, yvel);
+            leftOffset = topOffset = 0;
             if (swipeBackFraction >= swipeBackFactor) {
                 switch (mDirectionMode) {
                     case FROM_LEFT:
@@ -330,7 +336,7 @@ public class SwipeBackLayout extends ViewGroup {
 
     private OnSwipeBackListener defaultSwipeBackListener = new OnSwipeBackListener() {
         @Override
-        public void onViewPositionChanged(View mView, float swipeBackFraction, float SWIPE_BACK_FACTOR) {
+        public void onViewPositionChanged(View mView, float swipeBackFraction, float swipeBackFactor) {
             invalidate();
         }
 
@@ -348,7 +354,7 @@ public class SwipeBackLayout extends ViewGroup {
 
     public interface OnSwipeBackListener {
 
-        void onViewPositionChanged(View mView, float swipeBackFraction, float SWIPE_BACK_FACTOR);
+        void onViewPositionChanged(View mView, float swipeBackFraction, float swipeBackFactor);
 
         void onViewSwipeFinished(View mView, boolean isEnd);
     }

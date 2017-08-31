@@ -2,6 +2,7 @@ package com.gw.swipebacksample;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.IdRes;
 import android.view.View;
 import android.widget.Button;
 
@@ -12,6 +13,7 @@ import com.gw.swipebacksample.activity.ListViewActivity;
 import com.gw.swipebacksample.activity.NestedScrollViewActivity;
 import com.gw.swipebacksample.activity.RecyclerViewActivity;
 import com.gw.swipebacksample.activity.ScrollViewActivity;
+import com.gw.swipebacksample.activity.SwipeRefreshLayoutActivity;
 import com.gw.swipebacksample.activity.ViewPagerActivity;
 import com.gw.swipebacksample.activity.WebViewActivity;
 import com.gw.swipebacksample.base.BaseToolBarActivity;
@@ -26,6 +28,7 @@ public class MainActivity extends BaseToolBarActivity implements View.OnClickLis
     private Button btnListView;
     private Button btnViewPager;
     private Button btnWebView;
+    private Button btnSwipeRefreshLayout;
 
     @Override
     protected int getLayoutId() {
@@ -35,32 +38,23 @@ public class MainActivity extends BaseToolBarActivity implements View.OnClickLis
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        btnCommon = (Button) findViewById(R.id.btnCommon);
-        btnCommon.setOnClickListener(this);
 
-        btnAttachToCommon = (Button) findViewById(R.id.btnAttachToCommon);
-        btnAttachToCommon.setOnClickListener(this);
+        btnCommon = initButton(R.id.btnCommon);
+        btnAttachToCommon = initButton(R.id.btnAttachToCommon);
+        btnScrollView = initButton(R.id.btnScrollView);
+        btnHorizontalScrollView = initButton(R.id.btnHorizontalScrollView);
+        btnNestedScrollView = initButton(R.id.btnNestedScrollView);
+        btnListView = initButton(R.id.btnListView);
+        btnRecyclerView = initButton(R.id.btnRecyclerView);
+        btnWebView = initButton(R.id.btnWebView);
+        btnViewPager = initButton(R.id.btnViewPager);
+        btnSwipeRefreshLayout = initButton(R.id.btnSwipeRefreshLayout);
+    }
 
-        btnScrollView = (Button) findViewById(R.id.btnScrollView);
-        btnScrollView.setOnClickListener(this);
-
-        btnHorizontalScrollView = (Button) findViewById(R.id.btnHorizontalScrollView);
-        btnHorizontalScrollView.setOnClickListener(this);
-
-        btnNestedScrollView = (Button) findViewById(R.id.btnNestedScrollView);
-        btnNestedScrollView.setOnClickListener(this);
-
-        btnListView = (Button) findViewById(R.id.btnListView);
-        btnListView.setOnClickListener(this);
-
-        btnRecyclerView = (Button) findViewById(R.id.btnRecyclerView);
-        btnRecyclerView.setOnClickListener(this);
-
-        btnWebView = (Button) findViewById(R.id.btnWebView);
-        btnWebView.setOnClickListener(this);
-
-        btnViewPager = (Button) findViewById(R.id.btnViewPager);
-        btnViewPager.setOnClickListener(this);
+    private Button initButton(@IdRes int id) {
+        Button btn = (Button) findViewById(id);
+        btn.setOnClickListener(this);
+        return btn;
     }
 
 
@@ -93,6 +87,9 @@ public class MainActivity extends BaseToolBarActivity implements View.OnClickLis
                 break;
             case R.id.btnWebView:
                 startActivity(WebViewActivity.class);
+                break;
+            case R.id.btnSwipeRefreshLayout:
+                startActivity(SwipeRefreshLayoutActivity.class);
                 break;
         }
     }

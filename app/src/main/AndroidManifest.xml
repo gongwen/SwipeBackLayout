@@ -47,6 +47,9 @@
         <activity
             android:name=".activity.WebViewActivity"
             android:theme="@style/Theme.Swipe.Back.NoActionBar" />
+        <activity
+            android:name=".activity.SwipeRefreshLayoutActivity"
+            android:theme="@style/Theme.Swipe.Back.NoActionBar" />
     </application>
 
 </manifest>
