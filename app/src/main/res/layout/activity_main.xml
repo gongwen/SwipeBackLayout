@@ -113,7 +113,16 @@
                 android:gravity="center"
                 android:text="WebView" />
 
-
+            <Button
+                android:id="@+id/btnSwipeRefreshLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="16dp"
+                android:gravity="center"
+                android:text="SwipeRefreshLayout" />
         </LinearLayout>
     </ScrollView>
 

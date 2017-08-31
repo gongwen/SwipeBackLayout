@@ -28,5 +28,6 @@ dependencies {
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:2.2.2'
 
     implementation "com.android.support:recyclerview-v7:25.4.0"
-    implementation 'com.gongwen:swipeback:1.0.0'
+//    implementation 'com.gongwen:swipeback:1.0.0'
+    implementation project(':library')
 }
