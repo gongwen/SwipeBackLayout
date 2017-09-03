@@ -5,7 +5,9 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.support.annotation.FloatRange;
 import android.support.annotation.IntDef;
+import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.view.MotionEventCompat;
@@ -15,6 +17,8 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.gw.swipeback.tools.Util;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -26,10 +30,10 @@ import java.lang.annotation.RetentionPolicy;
 public class SwipeBackLayout extends ViewGroup {
     private static final String TAG = "SwipeBackLayout";
 
-    public static final int FROM_LEFT = 0;
-    public static final int FROM_TOP = 1;
-    public static final int FROM_RIGHT = 2;
-    public static final int FROM_BOTTOM = 3;
+    public static final int FROM_LEFT = 1 << 0;
+    public static final int FROM_RIGHT = 1 << 1;
+    public static final int FROM_TOP = 1 << 2;
+    public static final int FROM_BOTTOM = 1 << 3;
 
     @IntDef({FROM_LEFT, FROM_TOP, FROM_RIGHT, FROM_BOTTOM})
     @Retention(RetentionPolicy.SOURCE)
@@ -48,10 +52,14 @@ public class SwipeBackLayout extends ViewGroup {
     private float swipeBackFactor = 0.5f;
     private float swipeBackFraction;
     private int maskAlpha = 125;
+    private boolean isSwipeFromEdge = false;
     private float downX, downY;
 
     private int leftOffset = 0;
     private int topOffset = 0;
+    private float autoFinishedVelocityLimit = 2000f;
+
+    private int touchedEdge = ViewDragHelper.INVALID_POINTER;
 
     public SwipeBackLayout(@NonNull Context context) {
         this(context, null);
@@ -65,6 +73,7 @@ public class SwipeBackLayout extends ViewGroup {
         super(context, attrs, defStyleAttr);
         setWillNotDraw(false);
         mDragHelper = ViewDragHelper.create(this, 1f, new DragHelperCallback());
+        mDragHelper.setEdgeTrackingEnabled(mDirectionMode);
         mTouchSlop = mDragHelper.getTouchSlop();
         setSwipeBackListener(defaultSwipeBackListener);
 
@@ -76,6 +85,7 @@ public class SwipeBackLayout extends ViewGroup {
         setDirectionMode(a.getInt(R.styleable.SwipeBackLayout_directionMode, mDirectionMode));
         setSwipeBackFactor(a.getFloat(R.styleable.SwipeBackLayout_swipeBackFactor, swipeBackFactor));
         setMaskAlpha(a.getInteger(R.styleable.SwipeBackLayout_maskAlpha, maskAlpha));
+        isSwipeFromEdge = a.getBoolean(R.styleable.SwipeBackLayout_isSwipeFromEdge, isSwipeFromEdge);
         a.recycle();
     }
 
@@ -196,10 +206,12 @@ public class SwipeBackLayout extends ViewGroup {
         @Override
         public int clampViewPositionHorizontal(View child, int left, int dx) {
             leftOffset = getPaddingLeft();
-            if (mDirectionMode == FROM_LEFT && !Util.canViewScrollRight(innerScrollView, downX, downY, false)) {
-                leftOffset = Math.min(Math.max(left, getPaddingLeft()), width);
-            } else if (mDirectionMode == FROM_RIGHT && !Util.canViewScrollLeft(innerScrollView, downX, downY, false)) {
-                leftOffset = Math.min(Math.max(left, -width), getPaddingRight());
+            if (isSwipeEnabled()) {
+                if (mDirectionMode == FROM_LEFT && !Util.canViewScrollRight(innerScrollView, downX, downY, false)) {
+                    leftOffset = Math.min(Math.max(left, getPaddingLeft()), width);
+                } else if (mDirectionMode == FROM_RIGHT && !Util.canViewScrollLeft(innerScrollView, downX, downY, false)) {
+                    leftOffset = Math.min(Math.max(left, -width), getPaddingRight());
+                }
             }
             return leftOffset;
         }
@@ -207,10 +219,12 @@ public class SwipeBackLayout extends ViewGroup {
         @Override
         public int clampViewPositionVertical(View child, int top, int dy) {
             topOffset = getPaddingTop();
-            if (mDirectionMode == FROM_TOP && !Util.canViewScrollUp(innerScrollView, downX, downY, false)) {
-                topOffset = Math.min(Math.max(top, getPaddingTop()), height);
-            } else if (mDirectionMode == FROM_BOTTOM && !Util.canViewScrollDown(innerScrollView, downX, downY, false)) {
-                topOffset = Math.min(Math.max(top, -height), getPaddingBottom());
+            if (isSwipeEnabled()) {
+                if (mDirectionMode == FROM_TOP && !Util.canViewScrollUp(innerScrollView, downX, downY, false)) {
+                    topOffset = Math.min(Math.max(top, getPaddingTop()), height);
+                } else if (mDirectionMode == FROM_BOTTOM && !Util.canViewScrollDown(innerScrollView, downX, downY, false)) {
+                    topOffset = Math.min(Math.max(top, -height), getPaddingBottom());
+                }
             }
             return topOffset;
         }
@@ -239,7 +253,14 @@ public class SwipeBackLayout extends ViewGroup {
         public void onViewReleased(View releasedChild, float xvel, float yvel) {
             super.onViewReleased(releasedChild, xvel, yvel);
             leftOffset = topOffset = 0;
-            if (swipeBackFraction >= swipeBackFactor) {
+            if (!isSwipeEnabled()) {
+                touchedEdge = ViewDragHelper.INVALID_POINTER;
+                return;
+            }
+            touchedEdge = ViewDragHelper.INVALID_POINTER;
+
+            boolean isBackToEnd = backJudgeBySpeed(xvel, yvel) || swipeBackFraction >= swipeBackFactor;
+            if (isBackToEnd) {
                 switch (mDirectionMode) {
                     case FROM_LEFT:
                         smoothScrollToX(width);
@@ -291,13 +312,49 @@ public class SwipeBackLayout extends ViewGroup {
         public int getViewVerticalDragRange(View child) {
             return height;
         }
+
+        @Override
+        public void onEdgeTouched(int edgeFlags, int pointerId) {
+            super.onEdgeTouched(edgeFlags, pointerId);
+            touchedEdge = edgeFlags;
+        }
     }
 
     public void finish() {
         ((Activity) getContext()).finish();
     }
 
-    public void setSwipeBackFactor(float swipeBackFactor) {
+    private boolean isSwipeEnabled() {
+        if (isSwipeFromEdge) {
+            switch (mDirectionMode) {
+                case FROM_LEFT:
+                    return touchedEdge == ViewDragHelper.EDGE_LEFT;
+                case FROM_TOP:
+                    return touchedEdge == ViewDragHelper.EDGE_TOP;
+                case FROM_RIGHT:
+                    return touchedEdge == ViewDragHelper.EDGE_RIGHT;
+                case FROM_BOTTOM:
+                    return touchedEdge == ViewDragHelper.EDGE_BOTTOM;
+            }
+        }
+        return true;
+    }
+
+    private boolean backJudgeBySpeed(float xvel, float yvel) {
+        switch (mDirectionMode) {
+            case FROM_LEFT:
+                return xvel > autoFinishedVelocityLimit;
+            case FROM_TOP:
+                return yvel > autoFinishedVelocityLimit;
+            case FROM_RIGHT:
+                return xvel < -autoFinishedVelocityLimit;
+            case FROM_BOTTOM:
+                return yvel < -autoFinishedVelocityLimit;
+        }
+        return false;
+    }
+
+    public void setSwipeBackFactor(@FloatRange(from = 0.0f, to = 1.0f) float swipeBackFactor) {
         if (swipeBackFactor > 1) {
             swipeBackFactor = 1;
         } else if (swipeBackFactor < 0) {
@@ -310,7 +367,7 @@ public class SwipeBackLayout extends ViewGroup {
         return swipeBackFactor;
     }
 
-    public void setMaskAlpha(int maskAlpha) {
+    public void setMaskAlpha(@IntRange(from = 0, to = 255) int maskAlpha) {
         if (maskAlpha > 255) {
             maskAlpha = 255;
         } else if (maskAlpha < 0) {
@@ -325,12 +382,28 @@ public class SwipeBackLayout extends ViewGroup {
 
     public void setDirectionMode(@DirectionMode int direction) {
         mDirectionMode = direction;
+        mDragHelper.setEdgeTrackingEnabled(direction);
     }
 
     public int getDirectionMode() {
         return mDirectionMode;
     }
 
+    public float getAutoFinishedVelocityLimit() {
+        return autoFinishedVelocityLimit;
+    }
+
+    public void setAutoFinishedVelocityLimit(float autoFinishedVelocityLimit) {
+        this.autoFinishedVelocityLimit = autoFinishedVelocityLimit;
+    }
+
+    public boolean isSwipeFromEdge() {
+        return isSwipeFromEdge;
+    }
+
+    public void setSwipeFromEdge(boolean isSwipeFromEdge) {
+        this.isSwipeFromEdge = isSwipeFromEdge;
+    }
 
     private OnSwipeBackListener mSwipeBackListener;
 
