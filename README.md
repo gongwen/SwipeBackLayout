@@ -4,16 +4,16 @@ SwipeBackLayout is an android library that can finish an activity by using gestu
 
 You can set the slide direction,such as FROM_LEFT,FROM_TOP,FROM_RIGHT and FROM_BOTTOM.
 
-You can also set whether it can only slide from the edge
+You can also set whether it can only slide from the edge.
 ## Screenshots
 
-| Custom-Style | WxChat-Style |
+| Custom-Style | WeChat-Style |
 | ------------ | ------------- |
 | ![SwipeBackLayoutDemo](screenshot/screenshot1.gif) | ![SwipeBackLayoutDemo-WeChat](screenshot/screenshot2.gif)  |
 
 Sample Apk Download
 ---
-[sample apk download](https://github.com/gongwen/SwipeBackLayout/raw/master/sample-apks/app-debug-1.0.1.apk)
+[sample apk download](https://github.com/gongwen/SwipeBackLayout/raw/master/sample-apks/app-debug-1.0.2.apk)
 
 Usage
 ---
@@ -56,7 +56,7 @@ dependencies {
 </com.gw.swipeback.WxSwipeBackLayout>
 
 ```
-Attention：
+**Attention：**
 If you are using WxSwipeBackLayout , you must call **WxSwipeBackActivityManager.getInstance().init(this)** to init it in Application.
 just like :
 ```
