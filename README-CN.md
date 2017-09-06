@@ -57,7 +57,7 @@ dependencies {
 
 ```
 **注意：**
-如果你想使用WxSwipeBackLayout，你必须在Application中调用**WxSwipeBackActivityManager.getInstance().init(this)**去初始化
+如果你想使用WxSwipeBackLayout，你必须在Application中调用 **WxSwipeBackActivityManager.getInstance().init(this)** 去初始化
 如下 :
 ```
 public class MainApplication extends Application {
@@ -73,7 +73,7 @@ public class MainApplication extends Application {
 | Attribute 属性          | Description 描述 |
 |:---				     |:---|
 | swipeBackFactor        |    设置滑动因子       |
-| maskAlpha        | 设置可是滑动时蒙层的透明度            |
+| maskAlpha        | 设置开始滑动时蒙层的透明度            |
 | directionMode         |  设置滑动关闭的方向（上下左右）         |
 | isSwipeFromEdge         | 设置是否仅可以从边缘滑动         |
 
