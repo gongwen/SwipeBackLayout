@@ -1,23 +1,21 @@
 SwipeBackLayout
 ---
-[中文版点我](README-CN.md)
+SwipeBackLayout是一个通过手势滑动关闭Activity的库
 
-SwipeBackLayout is an android library that can finish an activity by using gesture.
+你可以设置滑动关闭的方向，比如FROM_LEFT,FROM_TOP,FROM_RIGHT and FROM_BOTTOM.
 
-You can set the slide direction,such as FROM_LEFT,FROM_TOP,FROM_RIGHT and FROM_BOTTOM.
+你也可以设置是否只可以从边缘滑动
+## 截屏
 
-You can also set whether it can only slide from the edge.
-## Screenshots
-
-| Custom-Style | WeChat-Style |
+| 普通风格 | 微信风格  |
 | ------------ | ------------- |
 | ![SwipeBackLayoutDemo](screenshot/screenshot1.gif) | ![SwipeBackLayoutDemo-WeChat](screenshot/screenshot2.gif)  |
 
-Sample Apk Download
+示例Apk下载
 ---
-[sample apk download](https://github.com/gongwen/SwipeBackLayout/raw/master/sample-apks/app-debug-1.0.2.apk)
+[示例Apk下载](https://github.com/gongwen/SwipeBackLayout/raw/master/sample-apks/app-debug-1.0.2.apk)
 
-Usage
+用法
 ---
 ##### Gradle
 ```
@@ -25,7 +23,7 @@ dependencies {
     compile 'com.gongwen:swipeback:1.0.2'
 }
 ```
-###### [Layout](app/src/main/res/layout/activity_common.xml)
+###### [布局中使用](app/src/main/res/layout/activity_common.xml)
 ```
 <com.gw.swipeback.SwipeBackLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -58,9 +56,9 @@ dependencies {
 </com.gw.swipeback.WxSwipeBackLayout>
 
 ```
-**Attention：**
-If you are using WxSwipeBackLayout , you must call **WxSwipeBackActivityManager.getInstance().init(this)** to init it in Application.
-just like :
+**注意：**
+如果你想使用WxSwipeBackLayout，你必须在Application中调用 **WxSwipeBackActivityManager.getInstance().init(this)** 去初始化
+如下 :
 ```
 public class MainApplication extends Application {
     @Override
@@ -71,15 +69,15 @@ public class MainApplication extends Application {
 }
 ```
 
-###### Attributes
+###### 属性
 | Attribute 属性          | Description 描述 |
 |:---				     |:---|
-| swipeBackFactor        |    set the factor of swipeback       |
-| maskAlpha        | set the background alpha at the beginning of swipeback            |
-| directionMode         |  set the direction of swiping to finish          |
-| isSwipeFromEdge         | set whether it can only slide from the edge          |
+| swipeBackFactor        |    设置滑动因子       |
+| maskAlpha        | 设置开始滑动时蒙层的透明度            |
+| directionMode         |  设置滑动关闭的方向（上下左右）         |
+| isSwipeFromEdge         | 设置是否仅可以从边缘滑动         |
 
-###### [Code](app/src/main/java/com/gw/swipebacksample/activity/CommonAttachToActivity.java)
+###### [代码中使用](app/src/main/java/com/gw/swipebacksample/activity/CommonAttachToActivity.java)
 ```
 public void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -102,7 +100,7 @@ public void onCreate(@Nullable Bundle savedInstanceState) {
     });
 }
 ```
-or
+或
 ```
 public void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -111,7 +109,7 @@ public void onCreate(@Nullable Bundle savedInstanceState) {
     setContentView(mSwipeBackLayout);
 }
 ```
-or
+或
 ```
 public void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -121,7 +119,7 @@ public void onCreate(@Nullable Bundle savedInstanceState) {
     mSwipeBackLayout.attachToActivity(this);
 }
 ```
-##### [Theme](app/src/main/res/values/styles.xml)
+##### [设置透明主题](app/src/main/res/values/styles.xml)
 ```
 <style name="Theme.Swipe.Back.NoActionBar" parent="AppTheme">
     <item name="android:windowIsTranslucent">true</item>
@@ -129,17 +127,17 @@ public void onCreate(@Nullable Bundle savedInstanceState) {
 </style>
 ```
 
-Support Views
+支持View的类型
 ---
-SwipeBackLayout must contains only one direct child.
+SwipeBackLayout必须只有一个子View.
 
-Such as:
+例如:
 * LinearLayout,RelativeLayout,FrameLayout,TableLayout etc.
 * ScrollView,HorizontalScrollView,NestedScrollView etc.
 * RecyclerView,the subClass of AbsListView(ListView etc.)
 * ViewPager,WebView etc.
 
-reference
+参考
 ---
 ##### [ViewDragHelper详解](http://www.jcodecraeer.com/a/anzhuokaifa/androidkaifa/2014/0911/1680.html)
 ##### [SwipeBack](https://github.com/liuguangqiang/SwipeBack/)
