@@ -3,11 +3,12 @@
     <declare-styleable name="SwipeBackLayout">
         <attr name="swipeBackFactor" format="float"></attr>
         <attr name="maskAlpha" format="integer"></attr>
+        <attr name="isSwipeFromEdge" format="boolean"></attr>
         <attr name="directionMode">
-            <enum name="left" value="0" />
-            <enum name="top" value="1" />
+            <enum name="left" value="1" />
             <enum name="right" value="2" />
-            <enum name="bottom" value="3" />
+            <enum name="top" value="4" />
+            <enum name="bottom" value="8" />
         </attr>
     </declare-styleable>
 </resources>

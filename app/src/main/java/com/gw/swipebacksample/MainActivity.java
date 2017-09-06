@@ -16,10 +16,12 @@ import com.gw.swipebacksample.activity.ScrollViewActivity;
 import com.gw.swipebacksample.activity.SwipeRefreshLayoutActivity;
 import com.gw.swipebacksample.activity.ViewPagerActivity;
 import com.gw.swipebacksample.activity.WebViewActivity;
+import com.gw.swipebacksample.activity.WxCommonActivity;
 import com.gw.swipebacksample.base.BaseToolBarActivity;
 
 public class MainActivity extends BaseToolBarActivity implements View.OnClickListener {
     private Button btnCommon;
+    private Button btnWxCommon;
     private Button btnAttachToCommon;
     private Button btnScrollView;
     private Button btnHorizontalScrollView;
@@ -40,6 +42,7 @@ public class MainActivity extends BaseToolBarActivity implements View.OnClickLis
         super.onCreate(savedInstanceState);
 
         btnCommon = initButton(R.id.btnCommon);
+        btnWxCommon = initButton(R.id.btnWxCommon);
         btnAttachToCommon = initButton(R.id.btnAttachToCommon);
         btnScrollView = initButton(R.id.btnScrollView);
         btnHorizontalScrollView = initButton(R.id.btnHorizontalScrollView);
@@ -63,6 +66,9 @@ public class MainActivity extends BaseToolBarActivity implements View.OnClickLis
         switch (view.getId()) {
             case R.id.btnCommon:
                 startActivity(CommonActivity.class);
+                break;
+            case R.id.btnWxCommon:
+                startActivity(WxCommonActivity.class);
                 break;
             case R.id.btnAttachToCommon:
                 startActivity(CommonAttachToActivity.class);

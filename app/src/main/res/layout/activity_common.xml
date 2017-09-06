@@ -4,9 +4,9 @@
     android:id="@+id/swipeBackLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    app:directionMode="bottom"
-    app:maskAlpha="255"
-    app:swipeBackFactor="0.8">
+    app:directionMode="left"
+    app:maskAlpha="125"
+    app:swipeBackFactor="0.5">
 
     <include layout="@layout/activity_attach_to_common"></include>
 

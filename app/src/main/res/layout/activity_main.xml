@@ -33,6 +33,16 @@
                 android:text="Common" />
 
             <Button
+                android:id="@+id/btnWxCommon"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="16dp"
+                android:gravity="center"
+                android:text="Common-Wx" />
+
+            <Button
                 android:id="@+id/btnAttachToCommon"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

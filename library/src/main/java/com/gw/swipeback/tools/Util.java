@@ -1,5 +1,6 @@
-package com.gw.swipeback;
+package com.gw.swipeback.tools;
 
+import android.app.Activity;
 import android.graphics.Rect;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
@@ -79,5 +80,21 @@ public class Util {
         Rect localRect = new Rect();
         mView.getGlobalVisibleRect(localRect);
         return localRect.contains((int) x, (int) y);
+    }
+
+    public static void onPanelSlide(float fraction) {
+        Activity activity = WxSwipeBackActivityManager.getInstance().getPenultimateActivity();
+        if (activity != null && !activity.isFinishing()) {
+            View decorView = activity.getWindow().getDecorView();
+            ViewCompat.setTranslationX(decorView, -(decorView.getMeasuredWidth() / 3.0f) * (1 - fraction));
+        }
+    }
+
+    public static void onPanelReset() {
+        Activity activity = WxSwipeBackActivityManager.getInstance().getPenultimateActivity();
+        if (activity != null) {
+            View decorView = activity.getWindow().getDecorView();
+            ViewCompat.setTranslationX(decorView, 0);
+        }
     }
 }
