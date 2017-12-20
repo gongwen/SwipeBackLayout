@@ -149,7 +149,7 @@ public class SwipeBackLayout extends ViewGroup {
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
-        switch (MotionEventCompat.getActionMasked(ev)) {
+        switch (ev.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 downX = ev.getRawX();
                 downY = ev.getRawY();
