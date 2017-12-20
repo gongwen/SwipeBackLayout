@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.support.annotation.FloatRange;
 import android.support.annotation.IntDef;
 import android.support.annotation.IntRange;
@@ -17,6 +16,7 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewParent;
 
 import com.gw.swipeback.tools.Util;
 
@@ -91,11 +91,14 @@ public class SwipeBackLayout extends ViewGroup {
 
     public void attachToActivity(Activity activity) {
         ViewGroup decorView = (ViewGroup) activity.getWindow().getDecorView();
-        ViewGroup decorChild = (ViewGroup) decorView.getChildAt(0);
-        decorChild.setBackgroundColor(Color.TRANSPARENT);
-        decorView.removeView(decorChild);
-        addView(decorChild);
-        decorView.addView(this);
+        ViewGroup contentView = decorView.findViewById(android.R.id.content);
+        ViewParent viewParent = contentView.getParent();
+        if (viewParent != null && viewParent instanceof ViewGroup) {
+            ViewGroup contentParentView = ((ViewGroup) viewParent);
+            contentParentView.removeView(contentView);
+            contentParentView.addView(this, new ViewGroup.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+            addView(contentView);
+        }
     }
 
     @Override
