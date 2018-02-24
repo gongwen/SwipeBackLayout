@@ -22,7 +22,7 @@ Usage
 ##### Gradle
 ```
 dependencies {
-    compile 'com.gongwen:swipeback:1.0.2'
+    implementation 'com.gongwen:swipeback:1.0.2'
 }
 ```
 ###### [Layout](app/src/main/res/layout/activity_common.xml)
